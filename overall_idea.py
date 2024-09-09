@@ -47,7 +47,6 @@ def retrieve_document(question, top_k=1):
     question_embedding = outputs.pooler_output.detach().cpu().numpy()
     D, I = index.search(question_embedding, top_k)
     return [corpus[i] for i in I[0]]
-
 # Function to generate response based on retrieved document
 
 
