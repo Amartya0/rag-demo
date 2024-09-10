@@ -125,10 +125,10 @@ def create_or_modify_index(questions, paragraphs, tokenizer, model, index_path, 
 
 
 def main():
-    data_file = os.path.join('data', 'Paragraphs_Questions.csv')
-    index_file = os.path.join('index', 'Paragraphs_Questions_index.faiss')
+    data_file = os.path.join('data', 'test_Paragraphs_Questions.csv')
+    index_file = os.path.join('index', 'test_Paragraphs_Questions_index.faiss')
     metadata_file = os.path.join(
-        'index', 'Paragraphs_Questions_index_metadata.json')
+        'index', 'test_Paragraphs_Questions_index_metadata.json')
 
     questions, paragraphs = load_data(data_file)
     model_name = 'sentence-transformers/all-MiniLM-L6-v2'

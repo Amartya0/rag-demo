@@ -3,6 +3,7 @@ A utility script to generate a test dataset from the main dataset
 """
 import pandas as pd
 import os
+import random
 
 
 def test_data_generator(main_data_file, test_data_file, n=100, append_to_existing=False):
@@ -37,14 +38,28 @@ def get_a_question(data_file, index=0):
         return None
     return df.iloc[index].Questions
 
+def get_a_paragraph(data_file, index=0):
+    """
+    Get a paragraph from the dataset
+    :param data_file: str, path to the dataset
+    :param index: int, index of the paragraph
+    :return: str, the paragraph
+    """
+    df = pd.read_csv(data_file)
+    if index >= len(df):
+        return None
+    return df.iloc[index].Paragraphs
+
 
 def main():
     # Load data
     main_data_file = os.path.join('data', 'Paragraphs_Questions.csv')
     test_data_file = os.path.join('data', 'test_Paragraphs_Questions.csv')
 
-    # test_data_generator(main_data_file, test_data_file, n=100, append_to_existing=False)
-    # print(get_a_question(test_data_file, 5))
+    n=500
+    #test_data_generator(main_data_file, test_data_file, n=n, append_to_existing=False)
+    print(get_a_question(test_data_file, random.randint(0,n)))
+    print(get_a_paragraph(test_data_file, random.randint(0,n)))
 
 
 if __name__ == '__main__':
