@@ -38,6 +38,7 @@ def get_a_question(data_file, index=0):
         return None
     return df.iloc[index].Questions
 
+
 def get_a_paragraph(data_file, index=0):
     """
     Get a paragraph from the dataset
@@ -56,10 +57,11 @@ def main():
     main_data_file = os.path.join('data', 'Paragraphs_Questions.csv')
     test_data_file = os.path.join('data', 'test_Paragraphs_Questions.csv')
 
-    n=500
-    #test_data_generator(main_data_file, test_data_file, n=n, append_to_existing=False)
-    print(get_a_question(test_data_file, random.randint(0,n)))
-    print(get_a_paragraph(test_data_file, random.randint(0,n)))
+    n = 500
+    # test_data_generator(main_data_file, test_data_file,n=n, append_to_existing=False)
+    k = random.randint(0, n)
+    print(get_a_question(test_data_file, k))
+    print(get_a_paragraph(test_data_file, k))
 
 
 if __name__ == '__main__':
