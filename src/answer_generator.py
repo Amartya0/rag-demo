@@ -3,10 +3,9 @@ import torch
 import time
 import logging
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from index_builder import load_data, load_model, vectorize_text
+from index_builder import load_data, load_model
 from retriever import retrieve_relevant_paragraphs, load_metadata, sanity_check
 import faiss
-import nltk
 import re
 from nltk.tokenize import sent_tokenize
 
@@ -34,7 +33,7 @@ def is_valid_sentence(sentence):
 
 def generate_answer(question, paragraphs, gen_tokenizer, gen_model, device):
     """ Generate answer based on the question and retrieved paragraphs """
-    logging.info("Generating an answer...")
+    # logging.info("Generating an answer...")
 
     # Concatenate the question and retrieved paragraphs for input
     input_text = f"question: {question} context: {' '.join(paragraphs)}"
@@ -62,7 +61,7 @@ def generate_answer(question, paragraphs, gen_tokenizer, gen_model, device):
     valid_sentences = [
         sentence for sentence in sentences if is_valid_sentence(sentence)]
 
-    logging.info("Answer generation completed.")
+    # logging.info("Answer generation completed.")
     return ' '.join(valid_sentences)
 
 
@@ -71,10 +70,12 @@ def main():
     logging.info("Starting the program...")
 
     # Define file paths
-    data_file = os.path.join('data', 'test_Paragraphs_Questions.csv')
-    index_file = os.path.join('index', 'test_Paragraphs_Questions_index.faiss')
+    data_file = os.path.join(
+        'data', 'test_Paragraphs_Questions_Answers_Grades.csv')
+    index_file = os.path.join(
+        'index', 'test_Paragraphs_Questions_Answers_Grades_index.faiss')
     metadata_file = os.path.join(
-        'index', 'test_Paragraphs_Questions_index_metadata.json')
+        'index', 'test_Paragraphs_Questions_Answers_Grades_index_metadata.json')
 
     if not os.path.exists(index_file):
         logging.error(
@@ -88,7 +89,7 @@ def main():
     metadata = load_metadata(metadata_file)
 
     # Load retrieval model (e.g., sentence transformers)
-    retrieval_model_name = 'sentence-transformers/all-MiniLM-L6-v2'
+    retrieval_model_name = 'sentence-transformers/all-MiniLM-L12-v2'
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     logging.info(f"Loading retrieval model: {retrieval_model_name}")
@@ -108,7 +109,7 @@ def main():
         generation_model_name, device)
 
     # Example query
-    query = "Why is hydropower considered renewable?"
+    query = "When did humanity's ecological footprint surpass Earth's capacity?"
 
     # Retrieve relevant paragraphs with progress visualization
     logging.info(f"Retrieving relevant paragraphs for the query: '{query}'")

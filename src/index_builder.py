@@ -125,13 +125,15 @@ def create_or_modify_index(questions, paragraphs, tokenizer, model, index_path, 
 
 
 def main():
-    data_file = os.path.join('data', 'test_Paragraphs_Questions.csv')
-    index_file = os.path.join('index', 'test_Paragraphs_Questions_index.faiss')
+    data_file = os.path.join(
+        'data', 'test_Paragraphs_Questions_Answers_Grades.csv')
+    index_file = os.path.join(
+        'index', 'test_Paragraphs_Questions_Answers_Grades_index.faiss')
     metadata_file = os.path.join(
-        'index', 'test_Paragraphs_Questions_index_metadata.json')
+        'index', 'test_Paragraphs_Questions_Answers_Grades_index_metadata.json')
 
     questions, paragraphs = load_data(data_file)
-    model_name = 'sentence-transformers/all-MiniLM-L6-v2'
+    model_name = 'sentence-transformers/all-MiniLM-L12-v2'
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f'Using device: {device}')
