@@ -6,24 +6,42 @@ import os
 import random
 
 
-def test_data_generator(main_data_file, test_data_file, n=100, append_to_existing=False):
+def test_data_generator(main_data_file, test_paragraph_question_answer_file, n=100, append_to_existing=False):
     """
     Generate a test dataset from the main dataset
     :param main_data_file: str, path to the main dataset
-    :param test_data_file: str, path to the test dataset
-    :param n: int, number of samples to take from the main dataset
-    :param append_to_existing: bool, whether to append the test dataset to the existing test dataset
-    :return: None
+    :param test_paragraph_file: str, path to the test paragraph dataset
+    :param test_question_file: str, path to the test question dataset
+    :param n: int, number of samples to generate
+    :param append_to_existing: bool, append to existing test dataset
+
     """
+
     if append_to_existing:
-        test_df = pd.read_csv(test_data_file)
-        main_df = pd.read_csv(main_data_file)
-        test_df = pd.concat([test_df, main_df.sample(n=n)])
+        pass
+
     else:
         main_df = pd.read_csv(main_data_file)
-        test_df = main_df.sample(n=n)
+        test_paragraphs = []
+        test_questions = []
+        test_answers = []
 
-    test_df.to_csv(test_data_file, index=False)
+        for _ in range(n):
+            k = random.randint(0, len(main_df))
+            text = main_df.iloc[k].Paragraphs
+            for _ in range(3):
+                test_paragraphs.append(text)
+
+            test_questions.append(main_df.iloc[k].Question1)
+            test_questions.append(main_df.iloc[k].Question2)
+            test_questions.append(main_df.iloc[k].Question3)
+            test_answers.append(main_df.iloc[k].Answer1)
+            test_answers.append(main_df.iloc[k].Answer2)
+            test_answers.append(main_df.iloc[k].Answer3)
+
+        test_df = pd.DataFrame(
+            {'Paragraphs': test_paragraphs, 'Questions': test_questions, 'Answers': test_answers})
+        test_df.to_csv(test_paragraph_question_answer_file, index=False)
 
 
 def get_a_question(data_file, index=0):
@@ -55,13 +73,44 @@ def get_a_paragraph(data_file, index=0):
 def main():
     # Load data
     main_data_file = os.path.join(
-        'data', 'Paragraphs_Questions_Answers_Grades.csv')
-    test_data_file = os.path.join(
-        'data', 'test_Paragraphs_Questions_Answers_Grades.csv')
+        'data', 'QA_dataset.csv')
 
-    n = 100
-    test_data_generator(main_data_file, test_data_file,
-                        n=n, append_to_existing=False)
+    whole_df = pd.read_csv(main_data_file)
+    paragraphs = []
+    questions = []
+    answers = []
+
+    # Process the rows in the input CSV
+    for i in range(len(whole_df)):
+        for _ in range(3):
+            paragraphs.append(whole_df.iloc[i].Paragraphs)
+        questions.append(whole_df.iloc[i].Question1)
+        questions.append(whole_df.iloc[i].Question2)
+        questions.append(whole_df.iloc[i].Question3)
+        answers.append(whole_df.iloc[i].Answer1)
+        answers.append(whole_df.iloc[i].Answer2)
+        answers.append(whole_df.iloc[i].Answer3)
+
+        # Append the data to fresh_df
+        temp_df = pd.DataFrame(
+            {'Paragraphs': paragraphs, 'Questions': questions, 'Answers': answers})
+
+        # After every 100 rows, save the current state of fresh_df to a CSV
+        if (i + 1) % 100 == 0:
+            print(f"Saving after {i + 1} iterations.")
+            temp_df.to_csv(
+                'data/Paragraphs_Questions_Answers.csv', index=False)
+
+    # Final save to ensure all data is saved after processing
+    temp_df.to_csv('data/Paragraphs_Questions_Answers.csv', index=False)
+
+    # test_paragraph_question_answer_file = os.path.join(
+    #     'data', 'test_Paragraphs_Questions_Answers.csv')
+
+    # n = 10
+    # test_data_generator(
+    #     main_data_file, test_paragraph_question_answer_file, n, append_to_existing=False)
+
     # k = random.randint(0, n)
     # print(k)
     # print(get_a_question(test_data_file, k))
